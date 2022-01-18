@@ -20,5 +20,6 @@ class CharacteristicCallbacks: public BLECharacteristicCallbacks {
 };
 
 void setupBLE();
+void bleLoop();
 
 #endif

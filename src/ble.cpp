@@ -1,9 +1,11 @@
 #include "ble.h"
+#include "action.h"
 
 BLEServer* pServer = NULL;
 BLECharacteristic *pCharacteristic = NULL;
 bool bleDeviceConnected = false;
 bool receivedBLEValue = false;
+String inputBLEValue = "";
 
 void ServerCallbacks::onConnect(BLEServer* pServer) {
   bleDeviceConnected = true;
@@ -19,7 +21,7 @@ void ServerCallbacks::onDisconnect(BLEServer* pServer) {
 void CharacteristicCallbacks::onWrite(BLECharacteristic* pCharacteristic) {
   std::string rxValue = pCharacteristic->getValue();
   if (rxValue.length() > 0) {
-    String inputBLEValue = "";
+    inputBLEValue = "";
     for (int i = 0; i < rxValue.length(); i++) {
       inputBLEValue += (char)rxValue[i];
     }
@@ -45,7 +47,9 @@ void setupBLE() {
   // Create BLE Characteristic
   pCharacteristic = pService->createCharacteristic(
     CHARACTERISTIC_UUID,
-    BLECharacteristic::PROPERTY_READ
+    BLECharacteristic::PROPERTY_READ   |
+    BLECharacteristic::PROPERTY_WRITE  |
+    BLECharacteristic::PROPERTY_NOTIFY
   );
 
   // Create BLE Descriptor
@@ -63,4 +67,12 @@ void setupBLE() {
   pAdvertising->setMinPreferred(0x12);
   BLEDevice::startAdvertising();
   Serial.println("[BLE] Waiting a client connection to notify");
+}
+
+void bleLoop() {
+  if (receivedBLEValue) {
+    doAction(inputBLEValue.c_str());
+    receivedBLEValue = false;
+    inputBLEValue = "";
+  }
 }
