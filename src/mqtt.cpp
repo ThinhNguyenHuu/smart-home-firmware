@@ -40,9 +40,6 @@ Dfvp7OOGAN6dEOM4+qR9sdjoSYKEBpsr6GtPAQw4dy753ec5
 -----END CERTIFICATE-----
 )EOF";
 
-WiFiClientSecure wifiClient;
-PubSubClient mqttClient(wifiClient);
-
 void setupMQTT() {
   wifiClient.setCACert(root_ca_cert);
   mqttClient.setServer(mqtt_server, 8883);
@@ -54,7 +51,7 @@ void connectToMQTTBroker() {
     Serial.println("[MQTT] Attempt to connect");
     if (mqttClient.connect(mqtt_client_id, mqtt_username, mqtt_password)) {
       Serial.println("[MQTT] Connected");
-      mqttClient.subscribe("action");
+      mqttClient.subscribe("/action");
     } else {
       Serial.print("[MQTT] Failed, rc = ");
       Serial.println(mqttClient.state());
@@ -72,14 +69,15 @@ void mqttLoop() {
 }
 
 void mqttCallback(char* topic, byte* payload, unsigned int length) {
-  Serial.print("[MQTT] Message arrive [");
-  Serial.print(topic);
-  Serial.print("] ");
   String command = "";
   for (int i = 0; i < length; i++) {
     command += (char)payload[i];
   }
   command.trim();
+  command.toUpperCase();
+  Serial.print("[MQTT] Message arrive [");
+  Serial.print(topic);
+  Serial.print("] ");
   Serial.println(command);
   doAction(command.c_str());
 }
