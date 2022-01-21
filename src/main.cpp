@@ -3,7 +3,9 @@
 #include "arduino_wifi.h"
 #include "mqtt.h"
 #include "ble.h"
-#include "dht_sensor.h"
+#include "action.h"
+
+void processCommand(String cmd);
 
 void setup() {  
   Serial.begin(115200);
@@ -12,12 +14,13 @@ void setup() {
   setupWiFi();
   setupMQTT();
   setupBLE();
-  setupDHT();
   setupActions();
 }
 
 void loop() {
   mqttLoop();
   bleLoop();
-  retrieveDHTData();
+}
+
+void processCommand(String command) {
 }

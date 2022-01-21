@@ -7,9 +7,6 @@
 #include <PubSubClient.h>
 #include <string.h>
 
-WiFiClientSecure wifiClient;
-PubSubClient mqttClient(wifiClient);
-
 void setupMQTT();
 void connectToMQTTBroker();
 void mqttLoop();
