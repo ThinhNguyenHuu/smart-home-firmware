@@ -2,6 +2,8 @@
 
 std::vector<Action*> actions;
 
+int pins[] = { RELAY_1_PIN, RELAY_2_PIN };
+
 Action* createAction(uint8_t pin, const char* key, Operation operation, uint8_t data) {
   Action* action = new Action();
   action->pin = pin;
@@ -12,12 +14,14 @@ Action* createAction(uint8_t pin, const char* key, Operation operation, uint8_t 
 }
 
 void setupActions() {
-  pinMode(RELAY_1_PIN, OUTPUT);
-  pinMode(RELAY_2_PIN, OUTPUT);
-  actions.push_back(createAction(RELAY_1_PIN, "LIGHT_1_ON", OPE_DIGITAL, HIGH));
-  actions.push_back(createAction(RELAY_1_PIN, "LIGHT_1_OFF", OPE_DIGITAL, LOW));
-  actions.push_back(createAction(RELAY_2_PIN, "LIGHT_2_ON", OPE_DIGITAL, HIGH));
-  actions.push_back(createAction(RELAY_2_PIN, "LIGHT_2_OFF", OPE_DIGITAL, LOW));
+  for (uint8_t i = 0; i < sizeof(pins)/sizeof(pins[0]); i++ ) {
+    pinMode(pins[i], OUTPUT);
+    digitalWrite(pins[i], HIGH);
+  }
+  actions.push_back(createAction(RELAY_1_PIN, "LIGHT_1_ON", OPE_DIGITAL, LOW));
+  actions.push_back(createAction(RELAY_1_PIN, "LIGHT_1_OFF", OPE_DIGITAL, HIGH));
+  actions.push_back(createAction(RELAY_2_PIN, "LIGHT_2_ON", OPE_DIGITAL, LOW));
+  actions.push_back(createAction(RELAY_2_PIN, "LIGHT_2_OFF", OPE_DIGITAL, HIGH));
 }
 
 Action* findActionByKey(const char* key) {

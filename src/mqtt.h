@@ -11,5 +11,6 @@ void setupMQTT();
 void connectToMQTTBroker();
 void mqttLoop();
 void mqttCallback(char* topic, byte* payload, unsigned int length);
+void mqttPublishData(const char* topic, const char* payload);
 
 #endif

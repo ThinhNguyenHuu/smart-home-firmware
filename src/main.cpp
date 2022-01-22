@@ -4,8 +4,7 @@
 #include "mqtt.h"
 #include "ble.h"
 #include "action.h"
-
-void processCommand(String cmd);
+#include "dht_sensor.h"
 
 void setup() {  
   Serial.begin(115200);
@@ -15,12 +14,11 @@ void setup() {
   setupMQTT();
   setupBLE();
   setupActions();
+  setupDHT();
 }
 
 void loop() {
   mqttLoop();
   bleLoop();
-}
-
-void processCommand(String command) {
+  sendDHTData();
 }

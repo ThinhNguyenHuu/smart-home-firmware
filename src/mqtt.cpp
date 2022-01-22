@@ -54,7 +54,7 @@ void connectToMQTTBroker() {
     Serial.println("[MQTT] Attempt to connect");
     if (mqttClient.connect(mqtt_client_id, mqtt_username, mqtt_password)) {
       Serial.println("[MQTT] Connected");
-      mqttClient.subscribe("action");
+      mqttClient.subscribe("/action");
     } else {
       Serial.print("[MQTT] Failed, rc = ");
       Serial.println(mqttClient.state());
@@ -82,4 +82,13 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
   command.trim();
   Serial.println(command);
   doAction(command.c_str());
+}
+
+void mqttPublishData(const char* topic, const char* payload) {
+  mqttClient.publish(topic, payload);
+  Serial.print("[MQTT] Publish ");
+  Serial.print(payload);
+  Serial.print(" to [");
+  Serial.print(topic);
+  Serial.println("]");
 }
